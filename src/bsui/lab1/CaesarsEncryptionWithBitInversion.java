@@ -17,7 +17,7 @@ public class CaesarsEncryptionWithBitInversion {
         char text;
         int temp;
 
-        BufferedReader file = new BufferedReader(new FileReader("test.txt"));
+        BufferedReader file = new BufferedReader(new FileReader("resources/caesars/test.txt"));
         System.out.println("\noriginal:");
         while ((temp = file.read()) != -1) {
             text = (char) (temp);
@@ -29,8 +29,8 @@ public class CaesarsEncryptionWithBitInversion {
         char text;
         int temp;
 
-        PrintWriter save = new PrintWriter("decrypted.txt");
-        BufferedReader file = new BufferedReader(new FileReader("encrypted.txt"));
+        PrintWriter save = new PrintWriter("resources/caesars/decrypted.txt");
+        BufferedReader file = new BufferedReader(new FileReader("resources/caesars/encrypted.txt"));
         System.out.println("\ndecrypted:");
         while ((temp = file.read()) != -1) {
             temp = 255 - temp;
@@ -48,8 +48,8 @@ public class CaesarsEncryptionWithBitInversion {
         char text;
         int temp;
 
-        PrintWriter save = new PrintWriter("encrypted.txt");
-        BufferedReader file = new BufferedReader(new FileReader("test.txt"));
+        PrintWriter save = new PrintWriter("resources/caesars/encrypted.txt");
+        BufferedReader file = new BufferedReader(new FileReader("resources/caesars/test.txt"));
         System.out.println("encrypted:");
         while ((temp = file.read()) != -1) {
             if (temp >= 65 && temp <= 90)
