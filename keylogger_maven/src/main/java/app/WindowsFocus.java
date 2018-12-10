@@ -1,14 +1,13 @@
 package app;
 
 
-import static app.WindowsFocus.User32DLL.*;
-import static app.WindowsFocus.Psapi.*;
-import static app.WindowsFocus.Kernel32.*;
-import static com.sun.jna.platform.win32.WinNT.PROCESS_QUERY_INFORMATION;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinDef.HWND;
 import com.sun.jna.ptr.PointerByReference;
+
+import static app.WindowsFocus.User32DLL.GetForegroundWindow;
+import static app.WindowsFocus.User32DLL.GetWindowTextW;
 
 public class WindowsFocus {
     private static final int MAX_TITLE_LENGTH = 1024;
@@ -18,14 +17,9 @@ public class WindowsFocus {
             String ret;
             char[] buffer = new char[MAX_TITLE_LENGTH * 2];
             GetWindowTextW(GetForegroundWindow(), buffer, MAX_TITLE_LENGTH);
-            ret = "Active window title: " + Native.toString(buffer);
+            ret = Native.toString(buffer);
             return ret;
 
-/*        PointerByReference pointer = new PointerByReference();
-        GetWindowThreadProcessId(GetForegroundWindow(), pointer);
-        Pointer process = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, pointer.getValue());
-        GetModuleBaseNameW(process, null, buffer, MAX_TITLE_LENGTH);
-        System.out.println("Active window process: " + Native.toString(buffer));*/
     }
 
     static class Psapi {

